@@ -8,16 +8,13 @@ const ProjectSchema = new mongoose.Schema({
         require: true,
     },
     description: {
-        type: Text,
+        type: String,
         require: true,
     },
     user: { 
         type: mongoose.Schema.Types.ObjectId, //Metodo que o mongoose salva o usuario no db
         ref: 'User',                          //Referencia de qual model é a relaçao a ser usada
         require: true,
-    },
-    img: {
-        data: Buffer, contentType: String
     },
     createdAt: {
         type: Date,
