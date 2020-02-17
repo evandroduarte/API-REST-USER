@@ -43,7 +43,6 @@ router.post('/', async (req, res) => {
 
 router.put('/:projectId', async (req, res) => {
     res.send({ user: req.userId });
-
 });
 
 router.delete('/:projectId', async (req, res) => {
