@@ -11,6 +11,10 @@ const ProjectSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    image: {
+        type: Object,
+        required: true,
+    },
     user: { 
         type: mongoose.Schema.Types.ObjectId, //Metodo que o mongoose salva o usuario no db
         ref: 'User',                          //Referencia de qual model é a relaçao a ser usada

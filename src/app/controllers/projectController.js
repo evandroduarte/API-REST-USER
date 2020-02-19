@@ -1,7 +1,35 @@
 const express = require('express');
 const authMiddleware = require('../middleware/auth');
-
-const Project = require("../models/project");
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, './uploads/');
+    },
+  
+    filename: function(req, file, cb) {
+      cb(null, file.originalname);
+    }
+  });
+  
+  const fileFilter = (req, file, cb) => {
+    if (
+      file.mimetype === 'image/jpg' ||
+      file.mimetype === 'image/jpeg' ||
+      file.mimetype === 'image/png'
+    ) {
+      cb(null, true);
+    } else {
+      cb(
+        new Error(
+          'Fromato de imagem inválido, utilize os formatos jpg, jpeg ou png!'
+        ),
+        false
+      );
+    }
+  };
+  
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+const Project = require('../models/project');
 
 const router = express.Router();
 
@@ -28,11 +56,13 @@ router.get('/:projectId', async (req, res) => {
 
 });
 
-router.post('/', async (req, res) => {
+router.post('/', upload.single('image'), async (req, res) => {
     try {
         const {title, description} = req.body;
 
-        const project = await Project.create({ title, description, user: req.userId });//Alem de pegar o body da requisição precisa pegar o usuario que criou o post
+        const image = req.file;
+
+        const project = await Project.create({ title, description, image, user: req.userId });//Alem de pegar o body da requisição precisa pegar o usuario que criou o post
 
         return res.send({ project });
     } catch (err) {
