@@ -72,7 +72,7 @@ router.get('/:memberId', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const members = await Member.find(); //Populate faz a query para carregar os usuarios que criaram os posts
+    const members = await Member.find(); 
 
     return res.send({ members });
   } catch (err) {
