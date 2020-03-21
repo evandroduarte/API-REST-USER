@@ -50,5 +50,25 @@ router.post('/', upload.array('photos', 2), async (req, res) => {
     }
   });
 
+router.delete('/:portfolioId', async (req, res) => {
+    try {
+      await Portfolio.findByIdAndRemove(req.params.portfolioId);
+  
+      return res.send();
+    } catch (err) {
+      return res.status(400).send({ error: 'Erro ao deletar o portfolio' });
+    }
+  });
+
+router.get('/', async (req, res) => {
+    try {
+      const portfolio = await Portfolio.find(); 
+  
+      return res.send({ portfolio });
+    } catch (err) {
+      return res.status(400).send({ error: 'Erro ao listar os portfolios' });
+    }
+  });
+
 
 module.exports = app => app.use('/portfolio', router);
