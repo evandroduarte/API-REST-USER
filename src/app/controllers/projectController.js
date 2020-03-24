@@ -3,7 +3,7 @@ const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-      cb(null, './uploads/projects/');
+      cb(null, './uploads/projects/ ');
     },
   
     filename: function(req, file, cb) {
@@ -33,8 +33,6 @@ const Project = require('../models/project');
 
 const router = express.Router();
 
-router.use(authMiddleware);
-
 router.get('/', async (req, res) => {
     try {
         const projects = await Project.find().populate('user');//Populate faz a query para carregar os usuarios que criaram os posts
@@ -56,7 +54,7 @@ router.get('/:projectId', async (req, res) => {
 
 });
 
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', authMiddleware,upload.single('image'), async (req, res) => {
     try {
         const {title, description} = req.body;
 
@@ -71,11 +69,11 @@ router.post('/', upload.single('image'), async (req, res) => {
 
 });
 
-router.put('/:projectId', async (req, res) => {
+router.put('/:projectId', authMiddleware,async (req, res) => {
     res.send({ user: req.userId });
 });
 
-router.delete('/:projectId', async (req, res) => {
+router.delete('/:projectId', authMiddleware,async (req, res) => {
     try {
         await Project.findByIdAndRemove(req.params.projectId);
 
