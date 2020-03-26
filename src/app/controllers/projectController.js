@@ -3,11 +3,11 @@ const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-      cb(null, './uploads/projects/ ');
+      cb(null, './uploads/projects/');
     },
   
-    filename: function(req, file, cb) {
-      cb(null, file.originalname);
+    filetitle: function(req, file, cb) {
+      cb(null, file.originaltitle);
     }
   });
   
@@ -69,8 +69,15 @@ router.post('/', authMiddleware,upload.single('image'), async (req, res) => {
 
 });
 
-router.put('/:projectId', authMiddleware,async (req, res) => {
-    res.send({ user: req.userId });
+router.put('/:projectId', upload.single('image'), authMiddleware,async (req, res) => {
+  const image = req.file;
+
+  const {title, description} = req.body;
+  
+  await Project.findByIdAndUpdate(req.params.projectId, {title: title, description: description, image: image},{new: true}, (err, project) => {
+      if (err) return res.status(500).send(err);
+      return res.send(project);
+    });
 });
 
 router.delete('/:projectId', authMiddleware,async (req, res) => {

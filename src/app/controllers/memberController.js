@@ -60,6 +60,17 @@ router.delete('/:memberId', async (req, res) => {
   }
 });
 
+router.put('/:memberId', upload.single('avatar'),async (req, res) => {
+  const avatar = req.file;
+
+  const {name, occupation} = req.body;
+  
+  await Member.findByIdAndUpdate(req.params.memberId, {name: name, occupation: occupation, avatar: avatar},{new: true}, (err, member) => {
+      if (err) return res.status(500).send(err);
+      return res.send(member);
+    });
+});
+
 router.get('/:memberId', async (req, res) => {
   try {
     const member = await Member.findById(req.params.memberId);

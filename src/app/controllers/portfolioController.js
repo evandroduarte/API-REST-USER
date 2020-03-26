@@ -20,7 +20,7 @@ const fileFilter = (req, file, cb) => {
     } else {
       cb(
         new Error(
-          'Fromato de imagem inválido, utilize os formatos jpg, jpeg ou png!'
+          'Fromato de imagens inválido, utilize os formatos jpg, jpeg ou png!'
         ),
         false
       );
@@ -59,6 +59,18 @@ router.delete('/:portfolioId', async (req, res) => {
       return res.status(400).send({ error: 'Erro ao deletar o portfolio' });
     }
   });
+
+router.put('/:portfolioId', upload.array('photos', 2), async (req, res) => {
+    const photos = req.files;
+  
+    const {name, description} = req.body;
+    
+    await Portfolio.findByIdAndUpdate(req.params.portfolioId, {name: name, description: description, photos: photos},{new: true}, (err, portfolio) => {
+        if (err) return res.status(500).send(err);
+        return res.send(portfolio);
+      });
+});
+  
 
 router.get('/', async (req, res) => {
     try {
