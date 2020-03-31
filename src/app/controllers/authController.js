@@ -22,7 +22,7 @@ function generateToken(params = {}) {
     });
 }
 
-router.post('/register', authMiddleware, async (req, res) => {
+router.post('/register', authMiddleware,async (req, res) => {
     const {
         email
     } = req.body;
@@ -81,7 +81,7 @@ router.post('/authenticate', async (req, res) => {
     });
 });
 
-/*router.get('/', authMiddleware,async (req, res) => {
+router.get('/', authMiddleware,async (req, res) => {
     try {
       const users = await User.find();
   
@@ -93,7 +93,7 @@ router.post('/authenticate', async (req, res) => {
         error: 'Erro ao listar os usuários'
       });
     }
-  });*/ //Rota para listagem de todos os usuarios cadastrados, sem uso no momento;
+  });
 
 
 router.post('/forgot_password', async (req, res) => {
@@ -192,5 +192,17 @@ router.post('/reset_password', async (req, res) => {
 
     }
 });
+
+router.delete('/:userId', async (req, res) => {
+    try {
+      await User.findByIdAndRemove(req.params.userId);
+  
+      return res.send();
+    } catch (err) {
+      return res.status(400).send({
+        error: 'Erro ao deletar o usuario!'
+      });
+    }
+  });
 
 module.exports = app => app.use('/auth', router);
