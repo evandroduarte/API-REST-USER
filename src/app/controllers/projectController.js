@@ -8,6 +8,9 @@ const storage = multer.diskStorage({
 
   filetitle: function (req, file, cb) {
     cb(null, file.originaltitle);
+  },
+  filename: function(req, file, cb){
+    cb(null, file.originalname);
   }
 });
 
