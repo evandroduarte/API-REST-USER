@@ -96,7 +96,8 @@ router.put('/:memberId', upload.single('avatar'), async (req, res) => {
     occupation: occupation,
     avatar: avatar
   }, {
-    new: true
+    new: true,
+    runValidators: true
   }, (err, member) => {
     if (err) return res.status(500).send(err);
     return res.send(member);

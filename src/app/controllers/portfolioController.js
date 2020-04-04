@@ -97,7 +97,8 @@ router.put('/:portfolioId', upload.array('photos', 2), authMiddleware,async (req
     description: description,
     photos: photos
   }, {
-    new: true
+    new: true,
+    runValidators: true
   }, (err, portfolio) => {
     if (err) return res.status(500).send(err);
     return res.send(portfolio);

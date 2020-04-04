@@ -108,7 +108,8 @@ router.put('/:projectId', upload.single('image'), authMiddleware, async (req, re
     description: description,
     image: image
   }, {
-    new: true
+    new: true,
+    runValidators: true
   }, (err, project) => {
     if (err) return res.status(500).send(err);
     return res.send(project);
