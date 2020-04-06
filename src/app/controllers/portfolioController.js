@@ -84,25 +84,38 @@ router.delete('/:portfolioId', authMiddleware,async (req, res) => {
   }
 });
 
-router.put('/:portfolioId', upload.array('photos', 2), authMiddleware,async (req, res) => {
-  const photos = req.files;
+router.put('/:portfolioId', upload.array('photos', 2), authMiddleware, async (req, res) => {
+  const newPhotos = req.files;
 
   const {
     name,
     description
   } = req.body;
 
-  await Portfolio.findByIdAndUpdate(req.params.portfolioId, {
-    name: name,
-    description: description,
-    photos: photos
-  }, {
-    new: true,
-    runValidators: true
-  }, (err, portfolio) => {
-    if (err) return res.status(500).send(err);
-    return res.send(portfolio);
-  });
+  if (newPhotos) {
+    await Portfolio.findByIdAndUpdate(req.params.portfolioId, {
+      name: name,
+      description: description,
+      photos: newPhotos
+    }, {
+      new: true,
+      runValidators: true
+    }, (err, portfolio) => {
+      if (err) return res.status(500).send(err);
+      return res.send(portfolio);
+    });
+  } else {
+    await Portfolio.findByIdAndUpdate(req.params.portfolioId, {
+      name: name,
+      description: description,
+    }, {
+      new: true,
+      runValidators: true
+    }, (err, portfolio) => {
+      if (err) return res.status(500).send(err);
+      return res.send(portfolio);
+    });
+  }
 });
 
 

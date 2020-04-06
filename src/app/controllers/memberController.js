@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const authMiddleware = require('../middleware/auth');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './uploads/members/');
@@ -39,7 +40,7 @@ const Member = require('../models/member');
 
 const router = express.Router();
 
-router.post('/', upload.single('avatar'), async (req, res) => {
+router.post('/', upload.single('avatar'), authMiddleware, async (req, res) => {
   const {
     name,
     occupation
@@ -71,7 +72,7 @@ router.post('/', upload.single('avatar'), async (req, res) => {
   }
 });
 
-router.delete('/:memberId', async (req, res) => {
+router.delete('/:memberId', authMiddleware, async (req, res) => {
   try {
     await Member.findByIdAndRemove(req.params.memberId);
 
@@ -83,25 +84,38 @@ router.delete('/:memberId', async (req, res) => {
   }
 });
 
-router.put('/:memberId', upload.single('avatar'), async (req, res) => {
-  const avatar = req.file;
+router.put('/:memberId', upload.single('avatar'), authMiddleware, async (req, res) => {
+  const newAvatar = req.file;
 
   const {
     name,
     occupation
   } = req.body;
 
-  await Member.findByIdAndUpdate(req.params.memberId, {
-    name: name,
-    occupation: occupation,
-    avatar: avatar
-  }, {
-    new: true,
-    runValidators: true
-  }, (err, member) => {
-    if (err) return res.status(500).send(err);
-    return res.send(member);
-  });
+  if (newAvatar) {
+    await Member.findByIdAndUpdate(req.params.memberId, {
+      name: name,
+      occupation: occupation,
+      avatar: newAvatar
+    }, {
+      new: true,
+      runValidators: true
+    }, (err, member) => {
+      if (err) return res.status(500).send(err);
+      return res.send(member);
+    });
+  } else {
+    await Member.findByIdAndUpdate(req.params.memberId, {
+      name: name,
+      occupation: occupation,
+    }, {
+      new: true,
+      runValidators: true
+    }, (err, member) => {
+      if (err) return res.status(500).send(err);
+      return res.send(member);
+    });
+  }
 });
 
 router.get('/:memberId', async (req, res) => {

@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
   filetitle: function (req, file, cb) {
     cb(null, file.originaltitle);
   },
-  filename: function(req, file, cb){
+  filename: function (req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname);
   }
 });
@@ -103,7 +103,7 @@ router.put('/:projectId', upload.single('image'), authMiddleware, async (req, re
     description
   } = req.body;
 
-  if(newImage){
+  if (newImage) {
     await Project.findByIdAndUpdate(req.params.projectId, {
       title: title,
       description: description,
@@ -115,7 +115,7 @@ router.put('/:projectId', upload.single('image'), authMiddleware, async (req, re
       if (err) return res.status(500).send(err);
       return res.send(project);
     });
-  }else{
+  } else {
     await Project.findByIdAndUpdate(req.params.projectId, {
       title: title,
       description: description,
@@ -127,24 +127,7 @@ router.put('/:projectId', upload.single('image'), authMiddleware, async (req, re
       return res.send(project);
     });
   }
-
-
 });
-
-/*router.put('/AlterImage/:projectId', upload.single('image'), authMiddleware, async (req, res) => {
-  const newImage= req.file;
-
-  await Project.findByIdAndUpdate(req.params.projectId, {
-    image: newImage
-  }, {
-    new: true,
-    runValidators: true
-  }, (err, project) => {
-    if (err) return res.status(500).send(err);
-    return res.send(project);
-  });
-
-});*/
 
 router.delete('/:projectId', authMiddleware, async (req, res) => {
   try {
