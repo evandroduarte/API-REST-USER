@@ -96,17 +96,46 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
 });
 
 router.put('/:projectId', upload.single('image'), authMiddleware, async (req, res) => {
-  const image = req.file;
+  const newImage = req.file;
 
   const {
     title,
     description
   } = req.body;
 
+  if(newImage){
+    await Project.findByIdAndUpdate(req.params.projectId, {
+      title: title,
+      description: description,
+      image: newImage
+    }, {
+      new: true,
+      runValidators: true
+    }, (err, project) => {
+      if (err) return res.status(500).send(err);
+      return res.send(project);
+    });
+  }else{
+    await Project.findByIdAndUpdate(req.params.projectId, {
+      title: title,
+      description: description,
+    }, {
+      new: true,
+      runValidators: true
+    }, (err, project) => {
+      if (err) return res.status(500).send(err);
+      return res.send(project);
+    });
+  }
+
+
+});
+
+/*router.put('/AlterImage/:projectId', upload.single('image'), authMiddleware, async (req, res) => {
+  const newImage= req.file;
+
   await Project.findByIdAndUpdate(req.params.projectId, {
-    title: title,
-    description: description,
-    image: image
+    image: newImage
   }, {
     new: true,
     runValidators: true
@@ -114,7 +143,8 @@ router.put('/:projectId', upload.single('image'), authMiddleware, async (req, re
     if (err) return res.status(500).send(err);
     return res.send(project);
   });
-});
+
+});*/
 
 router.delete('/:projectId', authMiddleware, async (req, res) => {
   try {

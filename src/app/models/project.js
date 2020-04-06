@@ -13,7 +13,7 @@ const ProjectSchema = new mongoose.Schema({
     },
     image: {
         type: Object,
-        required: true,
+        require: true,
     },
     user: { 
         type: mongoose.Schema.Types.ObjectId, //Metodo que o mongoose salva o usuario no db
