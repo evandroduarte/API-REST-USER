@@ -92,7 +92,7 @@ router.put('/:portfolioId', upload.array('photos', 2), authMiddleware, async (re
     description
   } = req.body;
 
-  if (newPhotos) {
+  if (newPhotos != 0) {
     await Portfolio.findByIdAndUpdate(req.params.portfolioId, {
       name: name,
       description: description,
