@@ -12,4 +12,4 @@ app.use(cors());
 
 require('./app/controllers/index')(app);
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 3000 || 5875);
