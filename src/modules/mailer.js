@@ -9,7 +9,9 @@ const { host, port, user, pass } = require('../config/mail.json');
 const transport = nodemailer.createTransport({
   host,
   port,
-  auth: { user, pass }
+  auth: { user, pass },
+  tls: {rejectUnauthorized: false}
+
 });
 
 
@@ -24,5 +26,13 @@ const handlebarOptions = {
   extName: '.html',
 }
 transport.use('compile', hbs(handlebarOptions));
+
+/*transport.verify(function(error, success) {
+  if (error) {
+       console.log(error);
+  } else {
+       console.log('Server is ready to take our messages');
+  }
+});*/ //Função de checagem da conexao do servidor smtp
 
 module.exports = transport;
