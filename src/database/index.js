@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://evandro:evandro123@site-ej-shard-00-00-q0i7q.gcp.mongodb.net:27017,site-ej-shard-00-01-q0i7q.gcp.mongodb.net:27017,site-ej-shard-00-02-q0i7q.gcp.mongodb.net:27017/test?ssl=true&replicaSet=site-ej-shard-0&authSource=admin&retryWrites=true&w=majority', 
+mongoose.connect('mongodb://dbEJCompAdmin:%216ejc%236532@191.252.113.79:27017/dbEJComp?authSource=dbEJComp', 
 {useNewUrlParser: true, 
 useUnifiedTopology: true,
 useFindAndModify: false}).catch(function (reason){
