@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     cb(null, file.originalname);
   },
-  filename: function(req, file, cb){
+  filename: function (req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname);
   }
 });
@@ -40,7 +40,13 @@ const Portfolio = require('../models/porfolio');
 
 const router = express.Router();
 
-router.post('/', upload.array('photos', 2), authMiddleware,async (req, res) => {
+router.post('/', upload.fields([{
+  name: 'photos_1',
+  maxCount: 1
+}, {
+  name: 'photos_2',
+  maxCount: 1
+}]), authMiddleware, async (req, res) => {
   const {
     name,
     description
@@ -54,12 +60,14 @@ router.post('/', upload.array('photos', 2), authMiddleware,async (req, res) => {
         error: 'Portfolio já cadastrado'
       });
 
-    const photos = req.files;
+    const photos_1 = req.files['photos_1'];
+    const photos_2 = req.files['photos_2'];
 
     const portfolio = await Portfolio.create({
       name,
       description,
-      photos
+      photos_1,
+      photos_2,
     });
 
     return res.send({
@@ -72,7 +80,7 @@ router.post('/', upload.array('photos', 2), authMiddleware,async (req, res) => {
   }
 });
 
-router.delete('/:portfolioId', authMiddleware,async (req, res) => {
+router.delete('/:portfolioId', authMiddleware, async (req, res) => {
   try {
     await Portfolio.findByIdAndRemove(req.params.portfolioId);
 
@@ -84,26 +92,61 @@ router.delete('/:portfolioId', authMiddleware,async (req, res) => {
   }
 });
 
-router.put('/:portfolioId', upload.array('photos', 2), authMiddleware, async (req, res) => {
-  const newPhotos = req.files;
+router.put('/:portfolioId', upload.fields([{
+  name: 'photos_1',
+  maxCount: 1
+}, {
+  name: 'photos_2',
+  maxCount: 1
+}]), authMiddleware, async (req, res) => {
+  const newPhotos = req.files['photos_1'];
+  const newPhotos_2 = req.files['photos_2'];
 
   const {
     name,
     description
   } = req.body;
 
-  if (newPhotos != 0) {
-    await Portfolio.findByIdAndUpdate(req.params.portfolioId, {
-      name: name,
-      description: description,
-      photos: newPhotos
-    }, {
-      new: true,
-      runValidators: true
-    }, (err, portfolio) => {
-      if (err) return res.status(500).send(err);
-      return res.send(portfolio);
-    });
+  if (newPhotos != null || newPhotos_2 != null) {
+    if (newPhotos != null && newPhotos_2 == null) {
+      await Portfolio.findByIdAndUpdate(req.params.portfolioId, {
+        name: name,
+        description: description,
+        photos_1: newPhotos,
+      }, {
+        new: true,
+        runValidators: true
+      }, (err, portfolio) => {
+        if (err) return res.status(500).send(err);
+        return res.send(portfolio);
+      });
+    } else if (newPhotos == null && newPhotos_2 != null) {
+      await Portfolio.findByIdAndUpdate(req.params.portfolioId, {
+        name: name,
+        description: description,
+        photos_2: newPhotos_2
+      }, {
+        new: true,
+        runValidators: true
+      }, (err, portfolio) => {
+        if (err) return res.status(500).send(err);
+        return res.send(portfolio);
+      });
+    } else {
+      await Portfolio.findByIdAndUpdate(req.params.portfolioId, {
+        name: name,
+        description: description,
+        photos_1: newPhotos,
+        photos_2: newPhotos_2
+      }, {
+        new: true,
+        runValidators: true
+      }, (err, portfolio) => {
+        if (err) return res.status(500).send(err);
+        return res.send(portfolio);
+      });
+    }
+
   } else {
     await Portfolio.findByIdAndUpdate(req.params.portfolioId, {
       name: name,

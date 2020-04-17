@@ -9,7 +9,11 @@ const PortfolioSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    photos: { 
+    photos_1: { 
+        type: Object,
+        required: true,
+    },
+    photos_2: {
         type: Object,
         required: true,
     },
