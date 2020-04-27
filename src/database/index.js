@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://dbEJCompAdmin:%216ejc%236532@191.252.113.79:27017/dbEJComp?authSource=dbEJComp', 
+mongoose.connect(process.env.DB_AUTHSTRING, 
 {useNewUrlParser: true, 
 useUnifiedTopology: true,
 useFindAndModify: false}).catch(function (reason){
